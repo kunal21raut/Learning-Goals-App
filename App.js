@@ -1,41 +1,52 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, Button, View, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, View, FlatList, Button } from 'react-native';
 import GoalItem from './components/GoalItem';
 import GoalInput from './components/GoalInput';
 
 
 export default function App() {
+  const [isModalVisible, setIsModalVisible] = useState(false)
   const [learnningGoals, setLearningGoals] = useState([]);
 
+  const modalHandler = () => {
+    setIsModalVisible(true);
+  }
 
   const addGoalHandler = (enteredGoalText) => {
     // console.log(enteredGoalText);
     // setLearningGoals([...learnningGoals,enteredGoalText])
     setLearningGoals(currentlearningGoals => [...currentlearningGoals,
-       {text : enteredGoalText,id : Math.random().toString()}
-      ]);
+    { text: enteredGoalText, id: Math.random().toString() }
+    ]);
   };
 
   const deleteGoalHandler = (id) => {
     setLearningGoals((currentlearningGoals) => {
       return currentlearningGoals.filter((goal) => goal.id !== id);
-    } )
+    })
   };
 
   return (
     <View style={styles.appContainer}>
-      <GoalInput onAddGoal={addGoalHandler}/>
+    <View style={styles.buttonStyle}>
+      <Button title="Add New Goal" onPress={modalHandler} color="#ff474a" />
+     </View>
+      <GoalInput
+        visible={isModalVisible}
+        modalHandler={setIsModalVisible}
+        onAddGoal={addGoalHandler}
+      />
 
       <View style={styles.goalsContainer}>
         <FlatList
           data={learnningGoals}
           renderItem={(itemData) => {
-            return <GoalItem text={itemData.item.text} 
-                             onDeleteitem={deleteGoalHandler}
-                             id ={itemData.item.id}
-                    />;
+            return <GoalItem text={itemData.item.text}
+              onDeleteitem={deleteGoalHandler}
+              id={itemData.item.id}
+            />;
           }}
-          keyExtractor={(item,index) => {
+          keyExtractor={(item) => {
             return item.id;
           }}
 
@@ -57,13 +68,21 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     paddingHorizontal: 16,
-    backgroundColor: "#f2f2f1",
+    backgroundColor: "#1d0225ff",
     // backgroundColor:"#56aa8c",
     // backgroundColor:"#ff474a"
   },
   goalsContainer: {
     flex: 6,
-    borderRadius:6,
+    borderRadius: 6,
+    padding:5,
+    marginTop:20,
   },
+  buttonStyle: {
+    margin: 10,
+    padding: 14,
+    borderBottomWidth: 3,
+    borderBlockColor:"white",
+},
 
 });
